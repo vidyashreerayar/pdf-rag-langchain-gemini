@@ -1,7 +1,3 @@
-Here is your **complete updated README content**.
-Replace everything inside your existing `README.md` with this text.
-
----
 
 ## PDF-Based Retrieval-Augmented Generation (RAG)
 
