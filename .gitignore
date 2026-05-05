@@ -1,0 +1,19 @@
+# Environment
+.env
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Mac
+.DS_Store
+
+# Project-specific
+Vectorstore/
+
+# IDE
+.ipynb_checkpoints/
+.vscode/
+.idea/
