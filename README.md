@@ -1,92 +1,212 @@
-## PDF-Based Retrieval-Augmented Generation (RAG)
+# 🤖 Enterprise AI Assistant
 
-This project implements a Retrieval-Augmented Generation (RAG) pipeline that enables context-aware question answering over PDF documents using semantic search and large language models.
+An enterprise AI assistant built using **LangChain**, **Google Gemini**, **ChromaDB**, and **Streamlit** that answers business questions using both enterprise documents and structured KPI datasets.
 
----
+The application automatically classifies user questions into one of three intelligent routes:
 
-### Project Overview
-
-The system loads a PDF file, splits its content into manageable text chunks, generates semantic embeddings using Google Gemini embedding models, stores vectors in a Chroma vector database, and performs similarity search to retrieve relevant context. Retrieved context is then passed to a Gemini chat model to produce grounded responses.
-
-This repository serves as a reference implementation for building document-based RAG systems.
+- 📄 **RAG** – Answers questions using enterprise PDF documents.
+- 📊 **CSV Analytics** – Retrieves monthly KPI values from structured datasets.
+- 🔀 **Hybrid** – Combines structured KPI data with enterprise document knowledge.
 
 ---
 
-### Project Structure
-1.0_RAG_PDF.ipynb # Main RAG pipeline notebook
-Festo_File_Overview.pdf # Sample PDF used for ingestion
-Vectorstore/ # Local Chroma vector database
-pyproject.toml # Project dependencies (uv)
-uv.lock # Locked dependency versions
-.env.example # Example environment variable file
+# Features
+
+- 📄 Multi-document Retrieval-Augmented Generation (RAG)
+- 📊 Business KPI lookup from CSV datasets
+- 🔀 Hybrid document + structured data reasoning
+- 🧠 Intelligent query routing
+- 🔍 Semantic search using ChromaDB
+- 🤖 Google Gemini 2.5 Flash Lite
+- 💻 Interactive Streamlit web interface
 
 ---
 
-### Tech Stack
+# System Architecture
+
+```
+                    User Question
+                          │
+                          ▼
+                 Query Classification
+            ┌──────────┬──────────┬──────────┐
+            │          │          │
+            ▼          ▼          ▼
+         RAG        CSV Query    Hybrid
+            │          │          │
+            ▼          ▼          ▼
+      ChromaDB     KPI CSVs   Both Sources
+            │          │          │
+            └──────────┴──────────┘
+                     ▼
+              Gemini 2.5 Flash Lite
+                     ▼
+                Final Response
+```
+
+---
+
+# Project Structure
+
+```
+Enterprise-AI-Assistant/
+│
+├── app.py
+├── 1.0_RAG_PDF.ipynb
+├── README.md
+├── pyproject.toml
+├── uv.lock
+├── .gitignore
+│
+├── docs/
+├── data/
+├── result_screenshots/
+│   ├── rag-query.png
+│   ├── csv-revenue-query.png
+│   ├── csv-otif-query.png
+│   └── hybrid-query.png
+│
+└── Vectorstore/
+```
+
+---
+
+# Tech Stack
 
 - Python
+- Streamlit
 - LangChain
+- Google Gemini 2.5 Flash Lite
 - Google Gemini Embeddings (`models/gemini-embedding-001`)
-- Google Gemini Chat Model (`gemini-2.5-flash-lite`)
-- Chroma Vector Database
-- PyPDF Document Loader
-- uv (Python package manager)
+- ChromaDB
+- Pandas
+- PyPDFLoader
 
 ---
 
-### How to Run
+# Demo
 
-1. Add your Google API key to a `.env` file:
-GOOGLE_API_KEY=your_api_key_here
-pip install uv
+## 📄 RAG Query
 
+**Question**
 
-2. Ensure **uv** is installed:
-pip install uv
+> What is Data Governance?
 
-3. Install dependencies:
+![RAG Query](result_screenshots/rag-query.png)
+
+---
+
+## 📊 CSV Query – Revenue
+
+**Question**
+
+> What was Revenue in February?
+
+![Revenue Query](result_screenshots/csv-revenue-query.png)
+
+---
+
+## 📊 CSV Query – OTIF
+
+**Question**
+
+> What was OTIF in April?
+
+![OTIF Query](result_screenshots/csv-otif-query.png)
+
+---
+
+## 🔀 Hybrid Query
+
+**Question**
+
+> What was Revenue in March and explain what Revenue means?
+
+![Hybrid Query](result_screenshots/hybrid-query.png)
+
+---
+
+# Running the Project
+
+## Clone the repository
+
+```bash
+git clone https://github.com/<your-username>/enterprise-ai-assistant.git
+cd enterprise-ai-assistant
+```
+
+## Create a `.env` file
+
+```text
+GOOGLE_API_KEY=your_google_api_key
+```
+
+## Install dependencies
+
+Using uv:
+
+```bash
 uv sync
+```
 
+or
 
-4. Open and run the notebook:
-1.0_RAG_PDF.ipynb
+```bash
+pip install -r requirements.txt
+```
 
----
+## Run the application
 
-### Example Query
-
-Sample run against `Festo_File_Overview.pdf`:
-
-**Q:** What is main.cpp?
-
-**A:** Based on the provided context, **main.cpp** is the **entry point of the backend program** for the Festo workstation control system. It is described as running an **infinite loop every 0.1 seconds** to perform tasks such as **reading sensors**.
-
----
-
-### Project Status
-
-**v1 (Completed):**
-- ✅ Single-PDF ingestion and text extraction
-- ✅ Recursive text chunking with overlap
-- ✅ Gemini embedding generation
-- ✅ Chroma vector store setup with persistence
-- ✅ Similarity-based semantic retrieval
-- ✅ Context-aware question answering with Gemini chat model
-
-**v2 (Planned):**
-- ⬜ Persistent multi-PDF ingestion
-- ⬜ Batched embedding to handle large documents under API rate limits
+```bash
+streamlit run app.py
+```
 
 ---
 
-### Notes & Limitations
+# Example Questions
 
-- Text chunking and document processing run locally and do not require API access.
-- Embedding generation uses Google's Generative AI API and is subject to free-tier rate limits.
-- Large documents should be embedded in small batches to avoid quota exhaustion.
+### 📄 RAG
+
+- What is Data Governance?
+- Who owns Gross Margin?
+- Explain Forecast Accuracy.
+
+### 📊 CSV
+
+- What was Revenue in February?
+- What was OTIF in April?
+- What was OEE in June?
+
+### 🔀 Hybrid
+
+- What was Revenue in March and explain what Revenue means?
+- What was OTIF in April and explain how it is calculated?
 
 ---
 
-### Purpose
+# Current Capabilities
 
-This project is a practical reference for building Retrieval-Augmented Generation pipelines using modern LLM and vector database tooling.
+- ✅ Multi-document PDF ingestion
+- ✅ Semantic document retrieval
+- ✅ Google Gemini embeddings
+- ✅ Chroma vector database
+- ✅ KPI retrieval from structured CSV files
+- ✅ Intelligent query routing
+- ✅ Hybrid document and KPI responses
+- ✅ Streamlit web interface
+
+---
+
+# Future Improvements
+
+- Conversation memory
+- Natural language SQL support
+- Additional enterprise data sources
+- Response source citations
+- Docker deployment
+
+---
+
+# Purpose
+
+This project demonstrates how Retrieval-Augmented Generation (RAG) can be combined with structured business analytics to build an enterprise AI assistant capable of answering both document-based and KPI-related business questions through a single conversational interface.
